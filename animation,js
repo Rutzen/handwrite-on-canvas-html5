@@ -1,0 +1,25 @@
+
+var ctx = document.querySelector("canvas").getContext("2d"),     // get 2D context
+dashLen = 220, dashOffset = dashLen, speed = 10,     // speed: the higher the value, the faster the animation
+txt = "Praise the sun!", x = 30, i = 0; // text string of choice
+
+ctx.font = "50px Lato, sans-serif"; // specify font and size
+ctx.lineWidth = 5; ctx.lineJoin = "round"; ctx.globalAlpha = 2/3; // thickness of the line (lineWidth)
+ctx.strokeStyle = ctx.fillStyle = "#222"; // specify color  
+
+(function loop() {
+  ctx.clearRect(x, 0, 60, 150);
+  ctx.setLineDash([dashLen - dashOffset, dashOffset - speed]); // create a long dash mask
+  dashOffset -= speed;                                         // reduce dash length
+  ctx.strokeText(txt[i], x, 90);                               // stroke letter
+
+  if (dashOffset > 0) requestAnimationFrame(loop);             // animate
+  else {
+	ctx.fillText(txt[i], x, 90);                               // fill final letter
+	dashOffset = dashLen;                                      // prep next char
+	x += ctx.measureText(txt[i++]).width + ctx.lineWidth * Math.random();
+	ctx.setTransform(1, 0, 0, 1, 0, 3 * Math.random());        
+	ctx.rotate(Math.random() * 0.005);                         // Math.random() makes the animation feel organic 
+	if (i < txt.length) requestAnimationFrame(loop);
+  }
+})();
